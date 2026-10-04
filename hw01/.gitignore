@@ -1,0 +1,6 @@
+/bits
+/bits.exe
+/main
+/*.o
+/tests/test_bits
+/tests/test_bits.o

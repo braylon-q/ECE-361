@@ -1,0 +1,5 @@
+All function declarations and descriptions were written by me or pulled directly from the hw01 assignment file. All test cases and expected outputs were coded manually, as well as the preprocessor #CHECK function. AI did assist in writing some of the code. While much of the function definitions were written by
+me, inline suggestions were sometimes taken advantage of. Many times, after outlining the purpose of a function or the steps I would take to accomplish its goal, AI would be able to create inline suggestions for the whole function. If they were correct, I would let AI insert the code. If not, I would define the 
+functions manually. Claude also wrote the terminal text capturing inside of test_bits.c
+
+Claude was used for much of the setup for this assignment. This includes: troubleshooting WSL connection, creating .vscode tasks, and generating a working Makefile. Beyond that, Copilot assisted in pushing the folder to the git. 

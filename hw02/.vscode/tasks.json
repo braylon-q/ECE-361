@@ -11,9 +11,12 @@
                 "-Wall",
                 "-Wextra",
                 "-Wpedantic",
+                "${workspaceFolder}/histogram.c",
                 "${workspaceFolder}/readings.c",
+                "${workspaceFolder}/stats.c",
+                "${workspaceFolder}/main.c",
                 "-o",
-                "${workspaceFolder}/readings"
+                "${workspaceFolder}/main"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

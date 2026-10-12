@@ -14,7 +14,7 @@ though does not return them, as arrays are passed using pointers. Instead, # rea
 and # skipped lines returned.
 */
 
-readingStats readings_parse(FILE* stream_in,int* ticks_r, float* temps_r, float* hums_r, int max_count, const int line_length, const int max_readings);
+readingStats readings_parse(FILE* stream_in,int* ticks_r, float* temps_r, float* hums_r, const int line_length, const int max_readings);
 /*
 Takes stdin from main.c, and pointers to our three arrays (ticks, temps, hums) 
 to fill them with parsed data. Returns the number of readings successfully parsed,

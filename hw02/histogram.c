@@ -3,7 +3,7 @@
 #include <string.h>
 #include "histogram.h"
 
-void histogram_print(int *temps_h, int count_h, const int num_bins, const float bin_width)
+void histogram_print(float *temps_h, int count_h, const int num_bins, const float bin_width)
 {
     /*
     Prints histogram through 2 loops; First loop fills an array of bins,
@@ -33,6 +33,4 @@ void histogram_print(int *temps_h, int count_h, const int num_bins, const float 
             putchar('*'); //print a star for each reading in the current bin
         printf(" %d\n", bins[b]); //print the count for the current bin
     }   
-
-
 }

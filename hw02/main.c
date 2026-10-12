@@ -31,23 +31,14 @@
 #define NUM_BINS     20          /* histogram: 0 to 100 C in 5 C bins */
 #define BIN_WIDTH    5.0f
 
-int   ticks[MAX_READINGS];
-float temps[MAX_READINGS];
-float hums[MAX_READINGS];
-int   count = 0;
-int   skipped = 0;
-float threshold = 30.0f;
-
-/* largest temperature from index i to the end, recursively */
-float max_temp(int i) { //FIXME: this function needs to be rewritten for single recursion.
-    if (i == count - 1)
-        return temps[i];
-    float rest = max_temp(i + 1);
-    return temps[i] > rest ? temps[i] : rest;
-}
-
 int main(int argc, char *argv[]) {
-    char line[LINE_LEN];
+    //No global variables; everything is local to main() or passed as arguments.
+    int   ticks[MAX_READINGS];
+    float temps[MAX_READINGS];
+    float hums[MAX_READINGS];
+
+    //Threshold value for temperature readings. Change this to adjust the threshold.
+    float threshold = 30.0f;
 
     //ARGc/argv checks stay in main.c
     if (argc > 2) {
@@ -63,92 +54,38 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    //WHILE loop: Keep in readings.c, used to fill arrays ticks, temps and hums.
-    while (fgets(line, sizeof line, stdin) != NULL) {
-        int i = 0;
-        while (line[i] == ' ' || line[i] == '\t')
-            i++;
-        if (line[i] == '\n' || line[i] == '\0' || line[i] == '#')
-            continue;
-        if (count == MAX_READINGS) {
-            fprintf(stderr, "warning: more than %d readings, the rest are ignored\n", MAX_READINGS);
-            break;
-        }
-        if (sscanf(line, "%d %f %f", &ticks[count], &temps[count], &hums[count]) == 3)
-            count++;
-        else
-            skipped++;
-    }
+    //gives count of successful and skipped readings. Fills ticks, temps and hums from stdin.
+    readingStats reading_main = readings_parse(stdin, ticks, temps, hums, LINE_LEN, MAX_READINGS);
 
-    printf("readings: %d\n", count);
-    printf("skipped:  %d\n", skipped);
-    if (count == 0) {
-        printf("no readings, no summary\n");
+    if (reading_main.count == 0) {
         return 0;
     }
 
-    /* temperature: min and mean */
-    float tmin = temps[0];
-    float tsum = 0.0f;
-    for (int i = 0; i < count; i++) {
-        if (temps[i] < tmin)
-            tmin = temps[i];
-        tsum += temps[i];
-    }
-    printf("temperature: min %6.1f  max %6.1f  mean %6.2f C\n", tmin, max_temp(0), tsum / count);
+    /* temperature: min, max, and mean */
+    stats temp_stats = stats_fill(temps, reading_main.count); //fill temperature stats to structure
 
-    /* humidity: min, max, and mean, the same loop again */
-    float hmin = hums[0];
-    float hmax = hums[0];
-    float hsum = 0.0f;
-    for (int i = 0; i < count; i++) {
-        if (hums[i] < hmin)
-            hmin = hums[i];
-        if (hums[i] > hmax)
-            hmax = hums[i];
-        hsum += hums[i];
-    }
-    printf("humidity:    min %6.1f  max %6.1f  mean %6.2f %%RH\n", hmin, hmax, hsum / count);
+    //printf call stays in main
+    printf("temperature: min %6.1f  max %6.1f  mean %6.2f C\n", temp_stats.min, temp_stats.max, temp_stats.mean);
 
-    /* longest run of consecutive readings above the threshold */
-    int run = 0, best = 0, best_start = -1, start = 0;
-    for (int i = 0; i < count; i++) {
-        if (temps[i] > threshold) {
-            if (run == 0)
-                start = i;
-            run++;
-            if (run > best) {
-                best = run;
-                best_start = start;
-            }
-        } else {
-            run = 0;
-        }
-    }
-    if (best == 0)
+    /* humidity: min, max, and mean */
+    stats hum_stats = stats_fill(hums, reading_main.count); //fill humidity stats to structure
+
+    //printf call stays in main
+    printf("humidity:    min %6.1f  max %6.1f  mean %6.2f %%RH\n", hum_stats.min, hum_stats.max, hum_stats.mean);
+
+    //gives the longest run of consecutive readings above the threshold.
+    bestRun main_best = stats_threshold(temps, reading_main.count, threshold);
+
+    //These if-else statements stay in main to avoid passing the ticks array through to 
+    //stats 
+    if (main_best.best == 0)
         printf("above %.1f C: never\n", threshold);
     else
         printf("above %.1f C: longest run %d readings, from tick %d to tick %d\n",
-               threshold, best, ticks[best_start], ticks[best_start + best - 1]);
+               threshold, main_best.best, ticks[main_best.best_start], ticks[main_best.best_start + main_best.best - 1]);
 
-    /* histogram of temperatures, 5 C bins; values outside 0..100 go to the end bins */
-    int bins[NUM_BINS] = {0}; //fill entire array with 0's
-    for (int i = 0; i < count; i++) {
-        int b = (int) (temps[i] / BIN_WIDTH); //figure out which bin to place bins[i] in
-        if (temps[i] < 0.0f)
-            b = 0; //b = 0 if temps[i] at min edge case (0 Celsius)
-        if (b >= NUM_BINS)
-            b = NUM_BINS - 1; //b = maximum index if temps[i] at max edge case (100 Celsius)
-        bins[b]++; //increment the count for the appropriate bin
-    }
-    printf("histogram:\n");
-    for (int b = 0; b < NUM_BINS; b++) {
-        if (bins[b] == 0)
-            continue; //skip empty bins
-        printf("  %5.1f to %5.1f C | ", b * BIN_WIDTH, (b + 1) * BIN_WIDTH); //print the range for the current bin
-        for (int k = 0; k < bins[b]; k++)
-            putchar('*'); //print a star for each reading in the current bin
-        printf(" %d\n", bins[b]); //print the count for the current bin
-    }
+    //print histogram of temperatures
+    histogram_print(temps, reading_main.count, NUM_BINS, BIN_WIDTH);
+
     return 0;
 }

@@ -3,10 +3,7 @@
 #include <string.h>
 #include "stats.h"
 
-static void print_thresh(bestRun* run);
-/*
-Helper function to print stats_threshold outcome.
-*/
+static float stats_max(float* array, int count_s, int i);
 
 stats stats_fill(float* array, int count_s)
 {
@@ -17,13 +14,13 @@ stats stats_fill(float* array, int count_s)
     //fill result with baseline values before moving to for loop.
     result.mean = 0.0f;
     result.min = array[0];
-    result.max = array[0];
+    result.max = stats_max(array, count_s, 0);
 
     for (int i = 0; i < count_s; i++) {
         if (array[i] < result.min)
             result.min = array[i];
-        if (array[i] > result.max)
-            result.max = array[i];
+        // if (array[i] > result.max)
+        //     result.max = array[i];
         result.mean += array[i];
     }
     result.mean /= count_s; //divide total by count to get mean
@@ -33,6 +30,23 @@ stats stats_fill(float* array, int count_s)
 
 }
 
+//helper function: stats_max, replaces this function thats already within 
+//stats_fill just to statisfy assignment requirement.
+static float stats_max(float* array, int count_s, int i)
+{
+    /*
+    Recursive function which finds maximum value of an array starting from index i.
+    Calls itself recursively until it reaches the last element of the array, then,
+    compares itself with the previous array value, returning the greater of the two.
+    Closes frames until the original call is resolved. Recursive maximum = 9999.
+    */
+    if (i == count_s - 1 || i >= 9998) //stop recursion at last element or 
+        return array[i];               // defined recursion limit.
+    
+    float rest = stats_max(array, count_s, i + 1);
+    return array[i] > rest ? array[i] : rest; //layout copied from starter program
+}
+
 bestRun stats_threshold(float* array, int count_s, float threshold)
 {
     /*
@@ -40,7 +54,7 @@ bestRun stats_threshold(float* array, int count_s, float threshold)
     */
     bestRun result;
     //fill array values before starting the loop.
-    result.best = 1;
+    result.best = 0;
     result.best_start = -1;
     int run = 0;
     int start = 0;
@@ -61,18 +75,3 @@ bestRun stats_threshold(float* array, int count_s, float threshold)
     
     return result;
 }
-
-//FIXME: will instead handle printing inside of main() to avoid having to pass through
-//the ticks array.
-
-// static void print_thresh(bestRun* run, float )
-// {
-//     /*
-//     Helper function to print stats_threshold outcome.
-//     */
-//     if (best == 0)
-//         printf("above %.1f C: never\n", threshold);
-//     else
-//         printf("above %.1f C: longest run %d readings, from tick %d to tick %d\n",
-//                threshold, best, ticks[best_start], ticks[best_start + best - 1]);
-// }

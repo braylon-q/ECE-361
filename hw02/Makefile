@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Wpedantic
+CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic
 
 MAIN_SOURCES = histogram.c readings.c stats.c main.c
 TEST_STATS_SOURCES = tests/test_stats.c stats.c

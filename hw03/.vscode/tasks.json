@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build main.c",
+            "type": "process",
+            "command": "gcc",
+            "args": [
+                "-std=gnu11",
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "${workspaceFolder}/main.c",
+                "${workspaceFolder}/ptr.c",
+                "-o",
+                "${workspaceFolder}/main"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

@@ -18,5 +18,15 @@ int main(void) {
     }
     printf("Pedestrian Crossing\n");
 
+    //WEEK 2: temperature and humidity sensor.
+    _iom361_set_sensor1(30.124f, 50.999f);
+    float temp, humid;
+    rc = sensor_read(base, &temp, &humid);
+    if (rc != 0) {
+        printf("sensor_read failed: %d\n", rc);
+        return 1;
+    }
+    printf("Temperature: %f°C, Humidity: %f %%RH\n", temp, humid);
+
     return 0;
 }

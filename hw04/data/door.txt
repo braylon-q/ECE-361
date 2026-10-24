@@ -1,0 +1,18 @@
+#This is a line that should be skipped
+Air
+Box
+Elvis
+Presley
+Left
+Right
+Right
+#This line should also be skipped
+Right
+Air
+Box
+
+#the line above should also be skipped
+Air
+Presley
+Aim
+Zero

@@ -18,7 +18,6 @@ tally_t *tally_create(void)
     If the tally cannot be created (too many tally structures), return NULL.
     Not using malloc(), as it is not allowed in this project. 
     */
-    static int created_count = 0;
     static int initialized = 0;
     static tally_t tallies[TALLY_MAX];
 
@@ -40,22 +39,27 @@ tally_t *tally_create(void)
     return NULL; // No avaialble spaces for new tallies.
 }
 
-void tally_destroy(tally_t *t)
+void tally_destroy(tally_t **t)
 {
     /*
     Empties a tally and makes it available for tally_create() to use again.
     A NULL input does nothing.
     */
 
-    if (t == NULL) {
+    
+    if (t == NULL)
+        return;
+    else if (*t == NULL) 
         return; // Do nothing if the input tally is NULL
+    
+
+    (*t)->size = -1; // Open tally for re-allocation.
+    for (int i = 0; i < TALLY_NAMES; i++) {
+        (*t)->names[i][0] = '\0'; // Clear each name in the tally
+        (*t)->counts[i] = 0; // Reset the count for each name
     }
 
-    t->size = -1; // Open tally for re-allocation.
-    for (int i = 0; i < TALLY_NAMES; i++) {
-        t->names[i][0] = '\0'; // Clear each name in the tally
-        t->counts[i] = 0; // Reset the count for each name
-    }
+    *t = NULL; //Un-point t from the memory address inside of static array tallies[]
     //This means tally_create will have to look for empty tallies that also haven't been allocated yet.
 }
 
@@ -70,8 +74,8 @@ int tally_add(tally_t *t, const char *name)
         return -1; // Return -1 if the tally or name is NULL
     }
 
-    if (strlen(name) > TALLY_LEN) {
-        return -1; // Return -1 if the name exceeds the maximum length
+    if (strlen(name) > TALLY_LEN || strlen(name) < 1) {
+        return -1; // Return -1 if the name exceeds the maximum length or is empty
     }
 
     // Check if the name already exists in the tally
@@ -138,15 +142,18 @@ void tally_print(const tally_t *t, FILE *out)
     Note: tried to do recursively, but it would've required too much complexity.
     If t or out is NULL, do nothing.
     */
-    int arr[t->size]; // Array to hold the count of successful comparisons for given name.
+    if (t == NULL || out == NULL) {
+        return;
+    }
 
+    int arr[TALLY_NAMES] = {0}; // Number of names lexically greater than each name.
     for (int i = 0; i < t->size; i++) { //Loop through all possible name comparisons.
         for (int j = 0; j < t->size; j++) {
             if (strcmp(t->names[i], t->names[j]) < 0) {
                 arr[i]++; // Increment the count for names that are greater than the current name
             }
         }
-    
+    }
     for (int i = t->size-1; i >= 0; i--) { //Check for highest count (lowest alphabetical name) and print it, then check for next highest count, etc.
         for (int j = 0; j < t->size; j++) {
             if (arr[j] == i) {
@@ -154,6 +161,6 @@ void tally_print(const tally_t *t, FILE *out)
             }
         }
     }
-
-
 }
+
+

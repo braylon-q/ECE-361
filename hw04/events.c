@@ -28,7 +28,7 @@ int main() {
         int i = 0;
         while (line[i] == ' ' || line[i] == '\t')
             i++;
-        if (line[i] == '\0' || line[i] == '#')
+        if (line[i] == '\0' || line[i] == '#' || line[i] == '\n')
             continue;
 
         size_t name_len = strlen(line + i); //get length of characters + i memory widths after leading whitespace read
@@ -43,8 +43,8 @@ int main() {
         else
             P++;
     }
-    if (tally_add(NULL, NULL) == -1) S++; //deliberately skip a line for testing.
+    // printf("%d\n", event->size);
     tally_print(event, stdout);
     printf("Skips: %d\n", S);
-    tally_destroy(&event);
+    tally_destroy(event);
 }

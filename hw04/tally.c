@@ -39,7 +39,7 @@ tally_t *tally_create(void)
     return NULL; // No avaialble spaces for new tallies.
 }
 
-void tally_destroy(tally_t **t)
+void tally_destroy(tally_t *t)
 {
     /*
     Empties a tally and makes it available for tally_create() to use again.
@@ -47,19 +47,17 @@ void tally_destroy(tally_t **t)
     */
 
     
-    if (t == NULL)
-        return;
-    else if (*t == NULL) 
+   
+    if (t == NULL) 
         return; // Do nothing if the input tally is NULL
     
 
-    (*t)->size = -1; // Open tally for re-allocation.
+    t->size = -1; // Open tally for re-allocation.
     for (int i = 0; i < TALLY_NAMES; i++) {
-        (*t)->names[i][0] = '\0'; // Clear each name in the tally
-        (*t)->counts[i] = 0; // Reset the count for each name
+        t->names[i][0] = '\0'; // Clear each name in the tally
+        t->counts[i] = 0; // Reset the count for each name
     }
 
-    *t = NULL; //Un-point t from the memory address inside of static array tallies[]
     //This means tally_create will have to look for empty tallies that also haven't been allocated yet.
 }
 

@@ -120,7 +120,8 @@ int main(void) {
     CHECK(tally_create() == NULL);
 
     //Create after destroy
-    tally_destroy(&test3);
+    tally_destroy(test3);
+    test3 = NULL; //C convention for caller to NULL their own variable.
     tally_t *test5 = tally_create();
     CHECK(test5 != NULL);
 
@@ -139,16 +140,16 @@ int main(void) {
     CHECK(test_output_is_alphabetical(test2));
 
     //SUMMARY:
-    printf("\n--SUMMARY--\nPasses: %d\nFails: %d\n Total: %d\n\n", 
+    printf("\n--SUMMARY--\nPasses: %d\nFails: %d\nTotal: %d\n\n", 
           passes, fails, passes + fails);
 
     //Destroy all allocated memory
-    tally_destroy(&test1);
-    tally_destroy(&test2);
-    tally_destroy(&test4);
-    tally_destroy(&test5);
+    tally_destroy(test1);
+    tally_destroy(test2);
+    tally_destroy(test4);
+    tally_destroy(test5);
 
-    
+    if (fails) return -1;
 
     return 0;
 }

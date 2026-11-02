@@ -1,4 +1,5 @@
-There are multiple ways to build and run this folder. "make" builds main.c, lock.c/.h, allowing entry in the command line via "./main data/codes.txt" (**must be done in this syntax to get the proper output**). "make run" builds/runs main.c and subsidiary files, allowing users to enter the code manually in the terminal. Doing it this way allows manual checking of the 5-second timeout implementation. "make test" builds/runs the test_lock.c test suite, and outputs passes/fails to the terminal. "make clean" removes all builds.
+
+There are multiple ways to build and run this folder. "make" builds main.c, lock.c/.h, allowing entry in the command line via "./main data/codes.txt" (**must be done in this syntax to get the proper output**). Insert 'X' or 'x' to end the program in this state. "make run" builds/runs main.c and subsidiary files, allowing users to enter the code manually in the terminal. Doing it this way allows manual checking of the 5-second timeout implementation. "make test" builds/runs the test_lock.c test suite, and outputs passes/fails to the terminal. "make clean" removes all builds.
 
 <table width="100%">
   <thead>
@@ -41,3 +42,5 @@ There are multiple ways to build and run this folder. "make" builds main.c, lock
     </tr>
   </tbody>
 </table>
+
+![FSM Diagram](ece361_hw05_2.png)

@@ -38,3 +38,4 @@ int sensor_read(uint32_t *base, float *temp_c, float *rh_pct)
 
     return 0; // Return 0 for success
 }
+

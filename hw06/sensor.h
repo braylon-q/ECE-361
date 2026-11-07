@@ -1,5 +1,5 @@
-#include <time.h>
 #pragma once
+#include <time.h>
 
 int sensor_read(uint32_t *base, float *temp_c, float *rh_pct);
 /*

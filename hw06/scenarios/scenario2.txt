@@ -1,0 +1,7 @@
+start 1895817600 # January 28th 2030 at 08:00
+
+# tick temp  rh    switches
+  0    7.31  65.99 0x0
+  9    7.38  66.04 0x2
+  27   7.6   66    0x4
+  81   7.86  66    0x0

@@ -1,0 +1,4 @@
+2030-01-28 08:00:00 temp=7.3 rh=66.0 switches=0x0 pressed=0x0 leds=0x0
+2030-01-28 08:00:09 temp=7.4 rh=66.0 switches=0x2 pressed=0x2 leds=0x2
+2030-01-28 08:00:27 temp=7.6 rh=66.0 switches=0x4 pressed=0x4 leds=0x6
+2030-01-28 08:01:21 temp=7.9 rh=66.0 switches=0x0 pressed=0x0 leds=0x6

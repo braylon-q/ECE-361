@@ -1,0 +1,4 @@
+balanced: 6 pairs, deepest 3 exit status 0
+line 1, column 8: found ')', expected ']' exit status 1
+line 1, column 12: found ')', nothing open exit status 1
+end of input: 2 still open, innermost '(' exit status 1
